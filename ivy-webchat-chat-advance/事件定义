@@ -1,0 +1,25 @@
+Client.replyReady. + clientId
+表示有消息准备好需要发送
+事件参数：提供了dumps()方法的对象，该方法将消息转换为\r\n结尾的json字符串
+事件处理者：clientId相等的Socket对象
+
+
+Message. + messageType
+所有需要系统其他部分支持的message可能会发送这类消息
+时间参数：message实例
+事件处理者：需要针对消息做出响应的部分，比如管理vnc连接、管理虚拟机状态显示的部分
+
+
+Webchat.currentChanged
+表示当前的webchat已切换
+事件参数：当前的webchat实例
+事件处理者：所有需要对这种变化作出响应的部分，比如管理虚拟机状态显示的模块
+
+
+Map.locationChanged
+表示当前的地图位置已改变
+事件参数：当前的位置，包括经度、纬度、位置可读信息
+
+
+{"name": "server1", "serverId": "asdfwerawasf3", "desc": "澳洲","vms": {"vm1":{"status": 0, "vmId": "asdfawf", "vmType":0, "desc": "虚拟机1"}}}
+{"cmd": 1012, "gps":[{"id": "sdfdfhfjnf", "desc": "伦敦", "lat": 12.434, "lng": 35.8845}, {"id": "hjolknsdgkj", "desc": "新南威尔士", "lat": 132.167, "lng": 25.4344}]}

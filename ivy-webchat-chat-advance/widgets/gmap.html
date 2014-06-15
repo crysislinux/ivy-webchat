@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        html { height: 100% }
+        body { height: 100%; margin: 0; padding: 0 }
+    </style>
+
+</head>
+<body>
+    <div id="map-canvas" style="width:100%; height:100%"></div>
+    <!--
+    <script type="text/javascript"
+        src="http://maps.googleapis.com/maps/api/js?key=AIzaSyChBhR0B6G4CQkPvILKste0YFDGh9XzAJQ&sensor=false&language=zh-CN">
+    </script>
+    -->
+
+    <script type="text/javascript">
+        var lastMarker = null;
+        var map = null;
+        var lastDeActiveMark = null;
+        var lastDeActiveMarkIcon = null;
+        var activeMark = null;
+
+        api.searchPressed.connect(searchLocation);
+        api.loadLocation.connect(loadLocation);
+
+        function searchLocation(location) {
+            if(map) {
+                var geocoder = new google.maps.Geocoder();
+                var request = {
+                    address: location
+                };
+                geocoder.geocode(request, function(results, status){
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        var position = results[0].geometry.location
+                        placeMarker(position)
+                        map.setZoom(16)
+                    }
+                });
+            }
+        }
+
+        function getReadableLocation(position) {
+            if(map) {
+                var geocoder = new google.maps.Geocoder();
+                var request = {
+                    location: position
+                }
+                geocoder.geocode(request, function(results, status){
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        var readable_position = results[0].formatted_address
+                        api.setLocation(position.lat(), position.lng(), readable_position)
+                        map.panTo(position)
+                    }else {
+                        api.setLocation(position.lat(), position.lng(), '')
+                        map.panTo(position)
+                    }
+                });
+            }
+        }
+
+        function loadLocation(lng, lat) {
+            var position = new google.maps.LatLng(lat, lng);
+            placeMarker(position)
+        }
+
+
+        function deleteMarker(marker) {
+            marker.setMap(null)
+        }
+
+        function initialize() {
+
+            var mapOptions = {
+                zoom: 2,
+                center: new google.maps.LatLng(32.546813,113.221435),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById('map-canvas'),
+                    mapOptions);
+
+            google.maps.event.addListener(map, 'click', function(e) {
+                placeMarker(e.latLng);
+            });
+
+            api.mapLoadOk();
+        }
+
+        function placeMarker(position) {
+
+            var image = {
+                url: '../images/currentLocation.png',
+                size: new google.maps.Size(48,48)
+            };
+            var marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                icon: image
+            });
+
+            if(lastMarker) {
+                deleteMarker(lastMarker)
+            }
+
+            lastMarker = marker
+
+            getReadableLocation(position)
+        }
+
+        function loadScript() {
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'http://maps.googleapis.com/maps/api/js?key=AIzaSyChBhR0B6G4CQkPvILKste0YFDGh9XzAJQ' +
+                    '&sensor=false&language=zh-CN&callback=initialize';
+            setTimeout(function(){
+                document.body.appendChild(script);
+            }, 100);
+        }
+
+        window.onload = loadScript;
+    </script>
+</body>
+</html>

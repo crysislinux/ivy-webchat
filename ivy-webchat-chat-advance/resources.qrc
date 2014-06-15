@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource>
+        <file>images/add.png</file>
+        <file>images/map.png</file>
+        <file>widgets/gmap.html</file>
+    </qresource>
+</RCC>
